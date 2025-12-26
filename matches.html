@@ -1,0 +1,44 @@
+<!doctype html>
+
+<html lang = "en">
+
+<head>
+
+    <meta charset="UTF-8" > 
+    <title>Available Matches</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+
+    <header class="navbar">
+        <div class="logo">⚽ Football Tickets</div>
+        
+        <div class="burger-icon" onclick="toggleMenu()">☰</div>
+
+        <div id="dropdown-menu" class="dropdown-content">
+            <div class="menu-header">
+                <span id="welcome_user">Guest</span>
+            </div>
+            <hr> <a href="#" onclick="alert('Profile coming soon!')">My Profile</a>
+            <a href="#" onclick="alert('History coming soon!')">Order History</a>
+            <a href="#" onclick="doLogout()" class="logout-link">Logout</a>
+        </div>
+    </header>
+
+
+    <div class="container">
+
+        <h1 style="text-align: center; color: white; text-shadow: 2px, 2px 4px #000;">Upcoming Matches</h1>
+
+        <div id="matches_container" class="matches_grid"></div>
+    </div>
+
+    <script src="matches.js"></script>
+
+
+</body>
+
+
+</hmtl>

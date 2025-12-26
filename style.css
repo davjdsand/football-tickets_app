@@ -1,0 +1,228 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+    background-image: url('background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed; /* Keeps background still while scrolling */
+    min-height: 100vh; /* Ensures bg covers full height */
+}
+
+.login-card {
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 1);
+    width: 300px;
+    /*opacity: 60%;*/
+}
+
+
+h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+input {
+    width: 80%;
+    /* Or 70%, 250px, etc. */
+    display: block;
+    /* Force them to be blocks so margins work */
+    margin: 10px auto;
+    /* Top/Bottom=10px, Left/Right=Auto (Centers it) */
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+
+}
+
+button:hover {
+    background-color: rgb(216, 216, 36);
+}
+
+button {
+    padding: 10px;
+    font-size: 16px;
+    border-color: black;
+    border-width: 1px;
+    display: block;
+    width: 50%;
+    margin: 10% auto;
+    cursor: pointer;
+    background-color: white;
+    transition: background-color 0.3s;
+
+}
+
+#message {
+    margin-top: 10px;
+    text-align: center;
+    color: red;
+    min-height: 20px;
+}
+
+.switch-page {
+    text-align: center;
+    font-size: 0.8em;
+    margin-top: 15px;
+}
+
+.switch-page a {
+    text-decoration: none;
+    color: darkblue;
+    font-weight: bold;
+}
+
+.navbar {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed; /* Sticks to top */
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+
+.logout_btn {
+    width: auto; /* Override the login button width */
+    margin: 0;
+    padding: 5px 15px;
+    background-color: red;
+    color: white;
+    border: none;
+}
+
+
+.container {
+    margin-top: 100px; /* Space for the fixed navbar */
+    padding: 20px;
+}
+
+/* THE GRID SYSTEM */
+.matches_grid {
+    display: grid;
+    /* This makes it responsive: fits as many cards as possible */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.match-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+
+.match-card:hover {
+    transform: translateY(-5px); /* Moves up slightly when hovered */
+}
+
+.match-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-details {
+    padding: 15px;
+    text-align: center;
+}
+
+.price-tag {
+    font-size: 1.2em;
+    color: green;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+
+
+.centered-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+
+/* BURGER ICON STYLES */
+.burger-icon {
+    font-size: 30px;
+    cursor: pointer;
+    color: white;
+    user-select: none; /* Prevents highlighting the text */
+}
+
+.burger-icon:hover {
+    color: #ffd700; /* Gold color on hover */
+}
+
+/* DROPDOWN MENU STYLES */
+.dropdown-content {
+    display: none; /* Hidden by default */
+    position: absolute;
+    right: 20px;
+    top: 60px; /* Just below the navbar */
+    background-color: white;
+    min-width: 200px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    z-index: 2000;
+    overflow: hidden;
+}
+
+/* Show the menu when this class is added via JS */
+.dropdown-content.show {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+/* Menu Items */
+.menu-header {
+    padding: 15px;
+    background-color: #003366;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.logout-link {
+    color: red !important; /* Force red text for logout */
+    font-weight: bold;
+}
+
+/* Simple animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+
+
+
+
