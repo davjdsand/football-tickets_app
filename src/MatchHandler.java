@@ -15,7 +15,7 @@ public class MatchHandler implements HttpHandler {
     public void handle (HttpExchange exchange) throws IOException {
         //cors headrs
         exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
-        exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, OPTIONS");
+        exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
         exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
 
 
@@ -58,6 +58,34 @@ public class MatchHandler implements HttpHandler {
                 exchange.sendResponseHeaders(500, 0); // Send error to browser
                 exchange.close();
             }
+
+            // i want to delete by id so i have to split
+            // tyhe url string by every / and the id is the last
+            // string from the path
+        } else if ("DELETE".equalsIgnoreCase(exchange.getRequestMethod())) {
+            try {
+                // get url path
+                String path = exchange.getRequestURI().getPath();
+                // split the string by the /
+                String[] segments = path.split("/");
+                String string_id = segments[segments.length - 1];
+                int id = Integer.parseInt(string_id); // cast to integer
+                Database.removeMatch(id);
+
+                // 200-- succes;;; -1 send back nothing
+                exchange.sendResponseHeaders(200, -1);
+                exchange.close();
+            } catch (NumberFormatException e) {
+                System.out.println("INVALID FORMAT SENT(last string not a number)");
+                exchange.sendResponseHeaders(400, -1);// 400-- bad request
+                exchange.close();
+            } catch (Exception e) {
+                System.out.println("ERROR DELETING THE MATCH");
+                e.printStackTrace();
+                exchange.sendResponseHeaders(500, -1);// 500-- server error
+                exchange.close();
+            }
+
         }
     }
 }

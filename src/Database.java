@@ -8,9 +8,9 @@ import java.util.List;
 public class Database {
 
     // create a table with users
-    private static List<User> user_table = new ArrayList<>();
+    private static final List<User> user_table = new ArrayList<>();
     // create a table with games
-    private static List<Match> matches_table = new ArrayList<>();
+    public static List<Match> matches_table = new ArrayList<>();
 
 
 
@@ -63,6 +63,22 @@ public class Database {
     // method for matches
     public static List<Match> getMatches() {
         return matches_table;
+    }
+
+
+    // method for removing a match -- admin only
+
+    public static void removeMatch(int id) {
+        Match match_to_delete = null;
+        for (Match match: matches_table ) {
+            if (match.getMatchID() == id) {
+                match_to_delete = match;
+                break;
+            }
+        }
+        if (match_to_delete != null) {
+            boolean remove = matches_table.remove(match_to_delete);
+        }
     }
 
 

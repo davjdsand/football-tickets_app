@@ -38,5 +38,8 @@ public class Match {
                 match_id, home_team_name, away_team_name, match_date, ticket_price, location, image_url
         );
     }
+    public int getMatchID () {
+        return this.match_id; // specific match taht i clicked on
+    }
 
 }
