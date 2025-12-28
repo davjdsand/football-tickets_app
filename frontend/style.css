@@ -220,7 +220,43 @@ button {
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* admin controls*/
+.admin-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
 
+.btn-delete {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-edit {
+    background-color: orange; 
+    color: white;
+    border: none;
+    padding: 5px 10 px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.add-match-button {
+    display: block;
+    margin: 20px auto;
+    background-color: green;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
 
 
 
