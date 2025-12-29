@@ -74,8 +74,23 @@ public class Match {
     public void setLocation(String location) {
         this.location = location;
     }
-    public String setLocation() {
+    public String getLocation() {
         return this.location;
     }
+
+    public void setImageUrl (String image_url) {
+        this.image_url = image_url;
+    }
+    public String getImageUrl () {
+        return this.image_url;
+    }
+
+    public void setStadium (String stadium_name) {
+        this.stadium_name = stadium_name;
+    }
+    public String getStadium () {
+        return this.stadium_name;
+    }
+
 
 }

@@ -124,6 +124,41 @@ public class MatchHandler implements HttpHandler {
                 exchange.sendResponseHeaders(500, -1);
             }
             exchange.close();
+        } else if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            try {
+                // read json body
+                java.io.InputStreamReader isr = new java.io.InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
+                java.io.BufferedReader br = new java.io.BufferedReader(isr);
+                StringBuilder body = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) body.append(line);
+                String json = body.toString();
+
+                // parse Data
+                // we DO NOT parse 'id' because the database generates it automatically
+                String home = parseJsonValue(json, "teamHome");
+                String away = parseJsonValue(json, "teamAway");
+                String stadium = parseJsonValue(json, "stadium");
+                String date = parseJsonValue(json, "matchDate");
+                String location = parseJsonValue(json, "location");
+                String imageUrl = parseJsonValue(json, "image_url"); // The new photo field
+
+                // handle price
+                double price = 0.0;
+                String price_str = parseJsonValue(json, "price");
+                if (!price_str.isEmpty()) {
+                    price = Double.parseDouble(price_str);
+                }
+
+                // call database
+                Database.addMatch(home, away, stadium, date, location, price, imageUrl);
+                exchange.sendResponseHeaders(200, -1);// succes
+
+            } catch(Exception e) {
+                System.out.println("❌ Error in POST:");
+                e.printStackTrace();
+                exchange.sendResponseHeaders(500, -1);
+            }
         }
     }
 

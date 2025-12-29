@@ -50,6 +50,7 @@ public class Database {
         return temp; // succesfull registration
     }
 
+    // check login method
     public static User checkLogin(String uname, String password) {
         for (User u : user_table) {
             if (u.getUsername().equals(uname) && u.getPassword().equals(password)) {
@@ -67,7 +68,6 @@ public class Database {
 
 
     // method for removing a match -- admin only
-
     public static void removeMatch(int id) {
         Match match_to_delete = null;
         for (Match match: matches_table ) {
@@ -96,6 +96,19 @@ public class Database {
         return false; // id not foudn
     }
 
+    // method to add a new match
+    public static void addMatch(String home, String away, String stadium_name, String date, String location ,double price, String image_url) {
+        int max_id = - 1;
+        for (Match m: matches_table) {
+            if (max_id < m.getMatchID()) {
+                max_id = m.getMatchID();
+            }
+        }
+        int new_id = max_id + 1;
+
+        Match new_match = new Match(new_id, home, away, stadium_name, date, price, location, image_url);
+        matches_table.add(new_match);
+    }
 
 
 }

@@ -64,6 +64,38 @@
         </div>
     </div>
 
+    <div id = "addModalOverlay" style = "display: none; position: fixed; top: 0; left: 0; width: 100; height: 100; background: rgba(0,0,0,0.5);z-index:999;"></div>
+
+    <div id="addModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; z-index:1000; width:300px; border-radius:8px; max-height:90vh; overflow-y:auto;">
+    <h2 style="color:black; text-align:center;">Add New Match</h2>
+    
+    <label>Home Team:</label>
+    <input type="text" id="add-home" placeholder="e.g. Liverpool" style="width:100%; margin-bottom:5px;">
+    
+    <label>Away Team:</label>
+    <input type="text" id="add-away" placeholder="e.g. Chelsea" style="width:100%; margin-bottom:5px;">
+    
+    <label>Stadium:</label>
+    <input type="text" id="add-stadium" placeholder="e.g. Anfield" style="width:100%; margin-bottom:5px;">
+
+    <label>Date:</label>
+    <input type="date" id="add-date" style="width:100%; margin-bottom:5px;">
+    
+    <label>Location:</label>
+    <input type="text" id="add-location" placeholder="e.g. London, UK" style="width:100%; margin-bottom:5px;">
+    
+    <label>Price ($):</label>
+    <input type="number" id="add-price" placeholder="50.00" style="width:100%; margin-bottom:5px;">
+    
+    <label>Photo URL (Poster):</label>
+    <input type="text" id="add-image" placeholder="https://example.com/photo.jpg" style="width:100%; margin-bottom:15px;">
+    
+    <div style="display:flex; justify-content:space-between;">
+        <button onclick="closeAddModal()" style="background:red; color:white; padding:5px 10px;">Cancel</button>
+        <button onclick="saveNewMatch()" style="background:blue; color:white; padding:5px 10px;">Create Match</button>
+    </div>
+</div>
+
     <script src="matches.js"></script>
 
 

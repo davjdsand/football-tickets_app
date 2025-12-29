@@ -89,9 +89,13 @@ fetch('http://localhost:8080/api/matches')
     })
     .catch(err => console.error("Error loading matches:", err));
 
-function buyTicket(matchId) {
-    alert("You clicked buy for Match ID: " + matchId);
-    // Later we can add real booking logic here
+function buyTicket(id) {
+    const match = allMatches.find(m => m.id == id)
+    if (match) {
+        alert(`You are buying a ticket for: ${match.teamHome} vs ${match.teamAway}`);
+    } else {
+        alert("Match not found");
+    }
 }
 
 
@@ -194,8 +198,48 @@ function closeEditModal () {
 
 
 function openAddMatchModal() {
-    alert("Open a form  to ad a match here!");
+    // clear inputs
+    document.getElementById('add-home').value = '';
+    document.getElementById('add-away').value = '';
+    document.getElementById('add-stadium').value = '';
+    document.getElementById('add-date').value = '';
+    document.getElementById('add-location').value = '';
+    document.getElementById('add-price').value = '';
+    document.getElementById('add-image').value = '';
+
+    document.getElementById('addModal').style.display = 'block';
+    document.getElementById('addModalOverlay').style.display = 'block';
 }
 
+function saveNewMatch() {
+    const new_match = {
+        teamHome: document.getElementById('add-home').value,
+        teamAway: document.getElementById('add-away').value,
+        stadium: document.getElementById('add-stadium').value,
+        matchDate: document.getElementById('add-date').value,
+        location: document.getElementById('add-location').value,
+        price: document.getElementById('add-price').value,
+        image_url: document.getElementById('add-image').value
+    };
+
+    if (!new_match.teamHome || !new_match.teamAway || !new_match.price) {
+        alert("Please fill i at least teams and price");
+        return;
+    }
+
+    fetch('http://localhost:8080/api/matches', {
+        method: 'POST', // POST means "Create New"
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(new_match)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Match Created Successfully!");
+            location.reload(); 
+        } else {
+            alert("Error creating match");
+        }
+    });
+}
 
 
