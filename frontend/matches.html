@@ -35,6 +35,35 @@
         <div id="matches_container" class="matches_grid"></div>
     </div>
 
+
+    <div id="editModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;"></div>
+    
+    <div id="editModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; z-index:1000; width:300px; border-radius:8px;">
+        <h2 style="color:black; text-align:center;">Edit Match</h2>
+        
+        <input type="hidden" id="edit-id">
+        
+        <label>Home Team:</label>
+        <input type="text" id="edit-home" style="width:100%; margin-bottom:10px;">
+        
+        <label>Away Team:</label>
+        <input type="text" id="edit-away" style="width:100%; margin-bottom:10px;">
+        
+        <label>Date:</label>
+        <input type="date" id="edit-date" style="width:100%; margin-bottom:10px;">
+        
+        <label>Location:</label>
+        <input type="text" id="edit-location" style="width:100%; margin-bottom:10px;">
+        
+        <label>Price:</label>
+        <input type="number" id="edit-price" style="width:100%; margin-bottom:20px;">
+        
+        <div style="display:flex; justify-content:space-between;">
+            <button onclick="closeEditModal()" style="background:red; color:white;">Discard</button>
+            <button onclick="saveMatchChanges()" style="background:green; color:white;">Save</button>
+        </div>
+    </div>
+
     <script src="matches.js"></script>
 
 

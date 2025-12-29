@@ -36,11 +36,14 @@ if (is_admin) {
 }
 
 
-//
+// store matches locally
+let allMatches = [];
+
 
 fetch('http://localhost:8080/api/matches')
     .then(response => response.json())
     .then(matches => {
+        allMatches = matches;
         const container = document.getElementById("matches_container");
 
         // loop through every match java sent 
@@ -133,10 +136,60 @@ function deleteMatch(id) {
 
 
 function editMatch(id) {
-    let new_price = prompt("Enter new price: ");
-    if (new_price) {
-        console.log(`Updating match ${id} with price ${new_price}`);
+    // find match datas by ids
+    const match = allMatches.find(m => m.id === id);
+    if (!match) {
+        return;
     }
+
+    // fill inputs
+    document.getElementById("edit-id").value = match.id;
+    document.getElementById("edit-home").value = match.teamHome;
+    document.getElementById("edit-away").value = match.teamAway;
+    document.getElementById("edit-date").value = match.matchDate;
+    document.getElementById("edit-location").value = match.location;
+    document.getElementById("edit-price").value = match.price;
+
+    // show modal
+    document.getElementById('editModal').style.display = 'block';
+    document.getElementById('editModalOverlay').style.display = 'block';
+
+}
+
+function saveMatchChanges() {
+    const id = document.getElementById('edit-id').value;
+    const home = document.getElementById('edit-home').value;
+    const away = document.getElementById('edit-away').value;
+    const date = document.getElementById('edit-date').value;
+    const loc = document.getElementById('edit-location').value;
+    const price = document.getElementById('edit-price').value;
+
+    const updateMatch = {
+        id: id,
+        teamHome: home,
+        teamAway: away,
+        matchDate: date,
+        location: loc,
+        price: price
+    };
+
+    fetch('http://localhost:8080/api/matches', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updateMatch)
+    }).then(response => {
+        if (response.ok) {
+            alert("Match Updated!");
+            location.reload(); // Refresh to see changes
+        } else {
+            alert("Error updating match");
+        }
+    });
+}
+
+function closeEditModal () {
+    document.getElementById('editModal').style.display = 'none';
+    document.getElementById('editModalOverlay').style.display = 'none';
 }
 
 

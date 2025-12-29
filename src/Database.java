@@ -81,6 +81,21 @@ public class Database {
         }
     }
 
+    // method to update a match
+    public static boolean updateMatch(int id, String home, String away, String date, String location, double price) {
+        for (Match m: matches_table) {
+            if (m.getMatchID() == id) {
+                m.setHomeTeam(home);
+                m.setAwAYTeam(away);
+                m.setLocation(location);
+                m.setPrice(price);
+                m.setDate(date);
+                return true;
+            }
+        }
+        return false; // id not foudn
+    }
+
 
 
 }

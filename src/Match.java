@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 
 public class Match {
 
@@ -40,6 +41,41 @@ public class Match {
     }
     public int getMatchID () {
         return this.match_id; // specific match taht i clicked on
+    }
+
+    public  void setHomeTeam (String name) {
+        this.home_team_name = name;
+    }
+    public String getHomeTeam () {
+        return this.home_team_name;
+    }
+
+    public  void setAwAYTeam (String name) {
+        this.away_team_name = name;
+    }
+    public  String getAwAYTeam () {
+        return this.away_team_name;
+    }
+
+    public void setDate (String date) {
+        this.match_date = date;
+    }
+    public String getDate () {
+       return this.match_date;
+    }
+
+    public void setPrice(double price) {
+        this.ticket_price = price;
+    }
+    public double getPrice() {
+        return this.ticket_price;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+    public String setLocation() {
+        return this.location;
     }
 
 }

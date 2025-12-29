@@ -1,6 +1,7 @@
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -15,7 +16,7 @@ public class MatchHandler implements HttpHandler {
     public void handle (HttpExchange exchange) throws IOException {
         //cors headrs
         exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
-        exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
+        exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS");
         exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
 
 
@@ -86,6 +87,64 @@ public class MatchHandler implements HttpHandler {
                 exchange.close();
             }
 
+        }
+
+
+        if ("PUT".equalsIgnoreCase(exchange.getRequestMethod())) {
+            try {
+                // read json sent from javascript
+                java.io.InputStreamReader isr = new java.io.InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
+                java.io.BufferedReader br = new java.io.BufferedReader(isr);
+                StringBuilder body = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) body.append(line);
+
+                String json = body.toString();
+
+                // parse datas
+                // need a helper function for numbers, or we parse them as strings first
+                int id = Integer.parseInt(parseJsonValue(json, "id"));
+                String home = parseJsonValue(json, "teamHome");
+                String away = parseJsonValue(json, "teamAway");
+                String date = parseJsonValue(json, "matchDate");
+                String location = parseJsonValue(json, "location");
+                String priceStr = parseJsonValue(json, "price");
+                double price = Double.parseDouble(priceStr); // castez din string in double
+
+                // call the database
+                boolean succes = Database.updateMatch(id, home, away, date, location, price);
+
+                if (succes) {
+                    exchange.sendResponseHeaders(200, -1);
+                } else {
+                    exchange.sendResponseHeaders(404, -1);// not found
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                exchange.sendResponseHeaders(500, -1);
+            }
+            exchange.close();
+        }
+    }
+
+    private String parseJsonValue(String json, String key) {
+        String search = "\"" + key + "\":";
+        int start = json.indexOf(search);
+        if (start == -1) return "";
+
+        start += search.length();
+
+        // Check if the value is a string (starts with quote) or number
+        char firstChar = json.charAt(start);
+        if (firstChar == '"') {
+            start++; // skip opening quote
+            int end = json.indexOf("\"", start);
+            return json.substring(start, end);
+        } else {
+            // It's a number (like price or id)
+            int end = json.indexOf(",", start);
+            if (end == -1) end = json.indexOf("}", start); // case where it's the last item
+            return json.substring(start, end).trim();
         }
     }
 }
