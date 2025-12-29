@@ -89,15 +89,6 @@ fetch('http://localhost:8080/api/matches')
     })
     .catch(err => console.error("Error loading matches:", err));
 
-function buyTicket(id) {
-    const match = allMatches.find(m => m.id == id)
-    if (match) {
-        alert(`You are buying a ticket for: ${match.teamHome} vs ${match.teamAway}`);
-    } else {
-        alert("Match not found");
-    }
-}
-
 
 function toggleMenu() {
     const menu = document.getElementById("dropdown-menu");
