@@ -233,4 +233,22 @@ function saveNewMatch() {
     });
 }
 
+function closeAddModal () {
+    const modal =document.getElementById('addModal');     
+    if (modal) {
+        modal.style.display = 'none';
+    } else {
+        console.error("Couldnt find this modal");
+    }
+
+    const overlay = document.getElementById('addModalOverlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+}
+
+
+
+
+
 
