@@ -11,7 +11,8 @@ public class Database {
     private static final List<User> user_table = new ArrayList<>();
     // create a table with games
     public static List<Match> matches_table = new ArrayList<>();
-
+    // create a table with transactions
+    public static List<Transaction> transactions_table = new ArrayList<>();
 
 
     // load some datas
@@ -93,7 +94,7 @@ public class Database {
                 return true;
             }
         }
-        return false; // id not foudn
+        return false; // id not found
     }
 
     // method to add a new match
@@ -109,6 +110,25 @@ public class Database {
         Match new_match = new Match(new_id, home, away, stadium_name, date, price, location, image_url);
         matches_table.add(new_match);
     }
+
+    // method to add a new transaction
+    public static void addTransaction (String zone, String username, int match_id, int seat_nr, double price) {
+        int max_id = -1;
+        for (Transaction t: transactions_table) {
+            if (max_id < t.getId()) {
+                max_id = t.getId();
+            }
+        }
+        int new_id = max_id + 1;
+        Transaction new_T = new Transaction(new_id, username,price, seat_nr,match_id, zone);
+        transactions_table.add(new_T);
+    }
+
+
+
+
+
+
 
 
 }

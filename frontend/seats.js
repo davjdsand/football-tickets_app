@@ -25,7 +25,7 @@ function buyTicket (match_id) {
 
     // Reset previous selections
     currentTransaction.zone_name = null;
-    currentTransaction.seatNumber = null;
+    currentTransaction.seat_nr = null;
 
     //  show stadium view first
     document.getElementById('stadium-view').style.display = 'flex';
@@ -79,7 +79,7 @@ function generateSeats() {
                 seat_div.classList.add('selected');
                 
                 // Logic: Save selection
-                currentTransaction.seat_number = i;
+                currentTransaction.seat_nr = i;
                 
                 // UI: Enable the confirm button
                 const btn = document.getElementById('confirm-seat-btn');
@@ -107,11 +107,41 @@ function closeTicketModal() {
 
 // fnal confirmation
 function confirmPurchase() {
-    if(!currentTransaction.seat_number) return;
+    if(!currentTransaction.seat_nr) return;
 
-    alert(`SUCCESS!\n\nYou bought a ticket for:\nZone: ${current_transaction.zone_name}\nSeat: ${current_transaction.seat_number}\nPrice: $${current_transaction.price}`);
-    
-    closeTicketModal();
+    // check if the user is loged in
+    const storedUser = sessionStorage.getItem("current_user");
+    if (!storedUser) {
+        alert("You must be logged in");
+        return;
+    }
+    const user = JSON.parse(storedUser);
+
+    // create the data object to send java
+    const ticketData = {
+        username: user.username,
+        match_id: currentTransaction.match_id,
+        zone: currentTransaction.zone_name,
+        seat_nr: currentTransaction.seat_nr,
+        price: currentTransaction.price
+    };
+
+    // Send the data using Fetch
+    fetch('http://localhost:8080/api/transactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(ticketData)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("✅ Ticket Purchased Successfully!\nSee you at the stadium!");
+            closeTicketModal();
+        } else {
+            alert("❌ Purchase failed. Server error.");
+        }
+    })
+    .catch(err => console.error("Error buying ticket:", err));
+
 }
 
 

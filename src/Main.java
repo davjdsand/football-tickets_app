@@ -16,6 +16,8 @@ public class Main {
         server.createContext("/api/register", new Register());
         // tell server: when js asks for /login, use Login()
         server.createContext("/api/login", new Login());
+        // tell server: when js asks for TransactionHandler use Transaction()
+        server.createContext("/api/transactions", new TransactionHandler());
 
 
         server.setExecutor(null);

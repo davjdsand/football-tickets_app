@@ -3,33 +3,37 @@ import java.time.LocalDate;
 public class Transaction {
 
     private int id; // non editable
-    private String name;
-    private String location;
-    private LocalDate date;
+    private String username;
     private double price;
+    private String zone; //  E, W, S, N
+    private int seat_number;
+    private int match_id;
 
-    public Transaction(int id, String name, String location, LocalDate date, Double price) {
+    public Transaction(int id, String name, Double price, int seat, int matchid, String zone) {
         this.id = id;
-        this.name = name;
-        this.location = location;
+        this.username = name;
         this.price = price;
-        this.date = date;
+        this.zone = zone;
+        this.match_id = matchid;
+        this.seat_number = seat;
     }
 
     // allows frontend to read the data and save it
     // when user click 'save'
-    public void setName(String new_name){
-        this.name = new_name;
+
+
+    public void setId(int id) {
+        this.id = id;
     }
-    public String getName() {
-        return this.name;
+    public int getId() {
+        return this.id;
     }
 
-    public void setLocation(String new_loc){
-        this.location = new_loc;
+    public void setName(String new_name){
+        this.username = new_name;
     }
-    public String getLocation() {
-        return this.location;
+    public String getName() {
+        return this.username;
     }
 
     public void setPrice(double new_price){
@@ -39,12 +43,27 @@ public class Transaction {
         return this.price;
     }
 
-    public void setDate(LocalDate new_date){
-        this.date = new_date;
+    public void setZone (String new_zone) {
+        this.zone = new_zone;
     }
-    public LocalDate getDate() {
-        return this.date;
+    public String getZone () {
+        return this.zone;
     }
+
+    public void setSeat (int new_seat) {
+        this.seat_number = new_seat;
+    }
+    public int getSeat () {
+        return this.seat_number;
+    }
+
+    public void setMatchID (int new_id) {
+        this.match_id = new_id;
+    }
+    public int getMatchId() {
+        return this.match_id;
+    }
+
 
 
 }
