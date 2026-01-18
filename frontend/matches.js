@@ -145,6 +145,9 @@ function editMatch(id) {
     document.getElementById("edit-location").value = match.location;
     document.getElementById("edit-price").value = match.price;
 
+
+    document.getElementById("edit-image").value = match.image_url || "";
+
     // show modal
     document.getElementById('editModal').style.display = 'block';
     document.getElementById('editModalOverlay').style.display = 'block';
@@ -165,7 +168,8 @@ function saveMatchChanges() {
         teamAway: away,
         matchDate: date,
         location: loc,
-        price: price
+        price: price,
+        image_url: document.getElementById('edit-image').value
     };
 
     fetch('http://localhost:8080/api/matches', {

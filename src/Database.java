@@ -128,15 +128,34 @@ public class Database {
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
-    // Note: Update is complex in 3NF, removing it for simplicity or you can update just Date/Price
-    public static boolean updateMatch(int id, String home, String away, String date, String location, double price) {
-        String sql = "UPDATE matches SET match_date=?, price=? WHERE id=?";
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, date);
-            pstmt.setDouble(2, price);
-            pstmt.setInt(3, id);
-            return pstmt.executeUpdate() > 0;
+    public static boolean updateMatch(int matchId, String home, String away, String date, String location, double price, String imageUrl) {
+        // 1. Update Match Details (Date, Price)
+        String sqlMatch = "UPDATE matches SET match_date=?, price=? WHERE id=?";
+
+        // 2. Update the Home Team's Logo (This updates the banner!)
+        // We use a subquery to find the correct team ID automatically
+        String sqlTeam = "UPDATE teams SET logo_url=? WHERE id = (SELECT home_team_id FROM matches WHERE id=?)";
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+
+            // Run first query (Match info)
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlMatch)) {
+                pstmt.setString(1, date);
+                pstmt.setDouble(2, price);
+                pstmt.setInt(3, matchId);
+                pstmt.executeUpdate();
+            }
+
+            // Run second query (Image info)
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlTeam)) {
+                pstmt.setString(1, imageUrl);
+                pstmt.setInt(2, matchId);
+                pstmt.executeUpdate();
+            }
+
+            System.out.println("✅ Match & Banner Updated for ID: " + matchId);
+            return true;
+
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

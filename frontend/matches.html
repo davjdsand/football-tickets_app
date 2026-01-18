@@ -56,12 +56,16 @@
         <input type="text" id="edit-location" style="width:100%; margin-bottom:10px;">
         
         <label>Price:</label>
-        <input type="number" id="edit-price" style="width:100%; margin-bottom:20px;">
+        <input type="number" id="edit-price" style="width:100%; margin-bottom:10px;">
         
+        <label>Banner URL: </label>
+        <input type="text" id="edit-image" style="width:100%; margin-bottom:20px;">
         <div style="display:flex; justify-content:space-between;">
             <button onclick="closeEditModal()" style="background:red; color:white;">Discard</button>
             <button onclick="saveMatchChanges()" style="background:green; color:white;">Save</button>
         </div>
+
+        
     </div>
 
     <div id = "addModalOverlay" style = "display: none; position: fixed; top: 0; left: 0; width: 100; height: 100; background: rgba(0,0,0,0.5);z-index:999;"></div>

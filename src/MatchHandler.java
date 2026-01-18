@@ -111,9 +111,13 @@ public class MatchHandler implements HttpHandler {
                 String priceStr = parseJsonValue(json, "price");
                 double price = Double.parseDouble(priceStr); // castez din string in double
 
-                // call the database
-                boolean succes = Database.updateMatch(id, home, away, date, location, price);
+                String imageUrl = parseJsonValue(json, "image_url"); // parse the image url
 
+                // call the database
+                boolean succes = Database.updateMatch(id, home, away, date, location, price, imageUrl);
+
+                // pass image url to the database
+                boolean success = Database.updateMatch(id, home, away, date, location, price, imageUrl);
                 if (succes) {
                     exchange.sendResponseHeaders(200, -1);
                 } else {
