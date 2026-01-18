@@ -3,6 +3,7 @@ import java.time.LocalDate;
 public class Transaction {
 
     private int id; // non editable
+
     private String username;
     private double price;
     private String zone; //  E, W, S, N

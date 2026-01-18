@@ -124,6 +124,21 @@ public class Database {
         transactions_table.add(new_T);
     }
 
+    // find taken seats for a specific match
+    public  static List<Integer> getTakenSeats(int target_match_id, String target_zone) {
+
+        List<Integer> taken_seats = new ArrayList<>();
+        for (Transaction t: transactions_table) {
+
+            // check if we are looking for the correct match
+            if (t.getMatchId() == target_match_id && t.getZone().equals(target_zone)) {
+                taken_seats.add(t.getSeat());
+            }
+        }
+
+        return taken_seats; // will return a list like [2, 14, 22]
+    }
+
 
 
 

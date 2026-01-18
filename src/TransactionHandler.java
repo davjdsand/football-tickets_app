@@ -53,6 +53,56 @@ public class TransactionHandler implements HttpHandler {
                 e.printStackTrace();
                 exchange.sendResponseHeaders(500, -1);
             }
+        } else if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+            try {
+
+                // parse the url parameter
+                String query = exchange.getRequestURI().getQuery();
+
+                // get the '5' from "match_id=5"
+                int match_id = -1;
+                String zone = "";
+                // Simple parser for multiple parameters
+                if (query != null) {
+                    String[] pairs = query.split("&"); // Split "matchId=1" and "zone=North Stand"
+                    for (String pair : pairs) {
+                        String[] keyValue = pair.split("=");
+                        if (keyValue.length == 2) {
+                            if (keyValue[0].equals("match_id")) {
+                                match_id = Integer.parseInt(keyValue[1]);
+                            } else if (keyValue[0].equals("zone")) {
+                                // Restore spaces if they were replaced by %20 (basic URL decoding)
+                                zone = keyValue[1].replace("%20", " ");
+                            }
+                        }
+                    }
+                }
+                //ask the db for taken seats
+                java.util.List<Integer> taken_seats = Database.getTakenSeats(match_id, zone);
+
+                // converrt list to json array string manually --"[1, 2, 4]"
+                StringBuilder json_response = new StringBuilder("[");
+                for (int i = 0; i < taken_seats.size(); i++) {
+                    json_response.append(taken_seats.get(i));
+                    // if it s not the last number -- add comma
+                    if (i < taken_seats.size() - 1) {
+                        json_response.append(",");
+                    }
+                }
+                json_response.append("]");
+
+                // send response
+                byte[] responseBytes = json_response.toString().getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(200, responseBytes.length);
+                OutputStream os = exchange.getResponseBody();
+                os.write(responseBytes);
+                os.close();
+
+            } catch (Exception e) {
+                System.out.println("Error in GET:");
+                e.printStackTrace();
+                exchange.sendResponseHeaders(500, -1);
+            }
         } else {
             exchange.sendResponseHeaders(405, -1);
         }

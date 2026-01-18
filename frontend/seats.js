@@ -53,6 +53,12 @@ function selectZone (zone_name, base_price_modifier) {
     document.getElementById('selected-zone-display').innerText = `Zone: ${zone_name} - $${currentTransaction.price}`;
     document.getElementById('ticketModalTitle').innerText = "Select Your Seat";
 
+    const btn = document.getElementById('confirm-seat-btn');
+    btn.innerText = "Select a Seat";  // Reset the text
+    btn.disabled = true;              // Disable it until they click a new seat
+
+
+
     generateSeats(); // Draw the grid
 }
 
@@ -60,35 +66,51 @@ function selectZone (zone_name, base_price_modifier) {
 // genearte seats
 function generateSeats() {
     const grid = document.getElementById('seats-grid');
-    grid.innerHTML = ""; // Clear old seats
+    grid.innerHTML = "Loading seats..."; // Temporary text while fetching
 
-    // Create 40 mock seats
-    for (let i = 1; i <= 40; i++) {
-        const seat_div = document.createElement('div');
-        seat_div.className = 'seat';
-        seat_div.innerText = i;
-        
-        // Randomly make some seats "Taken" (Red)
-        if (Math.random() < 0.2) { 
-            seat_div.classList.add('taken');
-        } else {
-            // Make available seats clickable
-            seat_div.onclick = function() {
-                // Visual: Highlight this seat, unhighlight others
-                document.querySelectorAll('.seat').forEach(s => s.classList.remove('selected'));
-                seat_div.classList.add('selected');
-                
-                // Logic: Save selection
-                currentTransaction.seat_nr = i;
-                
-                // UI: Enable the confirm button
-                const btn = document.getElementById('confirm-seat-btn');
-                btn.disabled = false;
-                btn.innerText = `Buy Seat ${i} for $${current_transaction.price}`;
-            };
-        }
-        grid.appendChild(seat_div);
-    }
+    // ask backend: which seats are taken for this match?
+    const match_id = currentTransaction.match_id;
+    const zone_name = currentTransaction.zone_name;
+    fetch(`http://localhost:8080/api/transactions?match_id=${match_id}&zone=${zone_name}`)
+        .then(response => response.json()) // Convert "[1,2]" string to Array
+        .then (takenSeats => {
+            grid.innerHTML = ""; // clear the grid
+
+            for (let i = 1; i <= 40; i++) {
+                const seat_div = document.createElement('div');
+                seat_div.className = 'seat';
+                seat_div.innerText = i;
+
+                // check the real database
+                if (takenSeats.includes(i)) {
+                    seat_div.classList.add('taken'); // red, unclickable
+                } else {
+                    // available seats
+                    seat_div.onclick = function() {
+                        document.querySelectorAll('.seat').forEach(s => s.classList.remove('selected'));
+                        seat_div.classList.add('selected');
+
+                        currentTransaction.seat_nr = i;
+                        
+                        const btn = document.getElementById("confirm-seat-btn");
+                        btn.disabled = false;
+                        btn.innerText = `Buy Seat ${i}`;
+                        
+                    };
+                }
+                grid.appendChild(seat_div);
+
+            }
+        })
+
+        .catch(err => {
+            console.error("Error fetchng seats: ", err);
+            grid.innerHTML = "Error loading map.";
+        })
+
+
+    
+
 }
 
 
@@ -121,7 +143,7 @@ function confirmPurchase() {
     const ticketData = {
         username: user.username,
         match_id: currentTransaction.match_id,
-        zone: currentTransaction.zone_name,
+        zone_name: currentTransaction.zone_name,
         seat_nr: currentTransaction.seat_nr,
         price: currentTransaction.price
     };
