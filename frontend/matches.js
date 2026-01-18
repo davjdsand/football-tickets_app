@@ -18,7 +18,7 @@ window.location.href = "index.html";
 }
 
 const stored_user = JSON.parse(sessionStorage.getItem('current_user'));
-const is_admin = stored_user && stored_user.role === 'ADMIN';
+const is_admin = stored_user && (stored_user.role === 'ADMIN' || stored_user.role === 'admin' || stored_user.role === 'Admin');
 
 if (is_admin) {
     const container = document.getElementById("matches_container");

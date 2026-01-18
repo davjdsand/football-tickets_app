@@ -2,10 +2,10 @@
 
 public class User {
 
-    protected int id;
-    protected String username;
-    protected String password;
-    protected String role; // if im admin or a simpler buyer
+    private int id;
+    private String username;
+    private String password;
+    private String role; // if im admin or a simpler buyer
 
 
     public User(int ID, String username, String pswrd, String role) {
