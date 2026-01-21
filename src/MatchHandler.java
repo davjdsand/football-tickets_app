@@ -1,38 +1,31 @@
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-
-
-
 public class MatchHandler implements HttpHandler {
 
     @Override
-    public void handle (HttpExchange exchange) throws IOException {
-        //cors headrs
+    public void handle(HttpExchange exchange) throws IOException {
+        // 1. CORS Headers (Allows your browser JS to talk to Java)
         exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS");
         exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
 
-
+        // 2. Handle OPTIONS (Pre-flight check)
         if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
             exchange.sendResponseHeaders(204, -1);
             return;
         }
 
+        // 3. GET: Retrieve all matches
         if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
             try {
-
-                // get the matches from the database
                 List<Match> matches = Database.getMatches();
 
-
-                // 3. Build JSON manually
+                // Build JSON manually
                 StringBuilder json = new StringBuilder("[");
                 for (int i = 0; i < matches.size(); i++) {
                     json.append(matches.get(i).toString());
@@ -44,8 +37,6 @@ public class MatchHandler implements HttpHandler {
 
                 String finalJson = json.toString();
 
-
-                // 4. Send Response
                 byte[] responseBytes = finalJson.getBytes(StandardCharsets.UTF_8);
                 exchange.getResponseHeaders().set("Content-Type", "application/json");
                 exchange.sendResponseHeaders(200, responseBytes.length);
@@ -54,118 +45,105 @@ public class MatchHandler implements HttpHandler {
                 os.close();
 
             } catch (Exception e) {
-                System.out.println("❌ CRASH inside MatchHandler:");
+                System.out.println("❌ CRASH inside MatchHandler (GET):");
                 e.printStackTrace();
-                exchange.sendResponseHeaders(500, 0); // Send error to browser
+                exchange.sendResponseHeaders(500, 0);
                 exchange.close();
             }
 
-            // i want to delete by id so i have to split
-            // tyhe url string by every / and the id is the last
-            // string from the path
+            // 4. DELETE: Remove a match by ID
         } else if ("DELETE".equalsIgnoreCase(exchange.getRequestMethod())) {
             try {
-                // get url path
                 String path = exchange.getRequestURI().getPath();
-                // split the string by the /
                 String[] segments = path.split("/");
                 String string_id = segments[segments.length - 1];
-                int id = Integer.parseInt(string_id); // cast to integer
+                int id = Integer.parseInt(string_id);
+
                 Database.removeMatch(id);
 
-                // 200-- succes;;; -1 send back nothing
                 exchange.sendResponseHeaders(200, -1);
                 exchange.close();
             } catch (NumberFormatException e) {
-                System.out.println("INVALID FORMAT SENT(last string not a number)");
-                exchange.sendResponseHeaders(400, -1);// 400-- bad request
+                System.out.println("INVALID ID FORMAT");
+                exchange.sendResponseHeaders(400, -1);
                 exchange.close();
             } catch (Exception e) {
-                System.out.println("ERROR DELETING THE MATCH");
                 e.printStackTrace();
-                exchange.sendResponseHeaders(500, -1);// 500-- server error
+                exchange.sendResponseHeaders(500, -1);
                 exchange.close();
             }
 
-        }
-
-
-        if ("PUT".equalsIgnoreCase(exchange.getRequestMethod())) {
+            // 5. PUT: Update an existing match
+        } else if ("PUT".equalsIgnoreCase(exchange.getRequestMethod())) {
             try {
-                // read json sent from javascript
-                java.io.InputStreamReader isr = new java.io.InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
-                java.io.BufferedReader br = new java.io.BufferedReader(isr);
-                StringBuilder body = new StringBuilder();
-                String line;
-                while ((line = br.readLine()) != null) body.append(line);
+                String json = readBody(exchange);
 
-                String json = body.toString();
-
-                // parse datas
-                // need a helper function for numbers, or we parse them as strings first
+                // Parse Data (Including 'stadium'!)
                 int id = Integer.parseInt(parseJsonValue(json, "id"));
                 String home = parseJsonValue(json, "teamHome");
                 String away = parseJsonValue(json, "teamAway");
+                String stadium = parseJsonValue(json, "stadium"); // ✅ Correctly reading stadium
                 String date = parseJsonValue(json, "matchDate");
                 String location = parseJsonValue(json, "location");
                 String priceStr = parseJsonValue(json, "price");
-                double price = Double.parseDouble(priceStr); // castez din string in double
+                double price = Double.parseDouble(priceStr);
+                String imageUrl = parseJsonValue(json, "image_url");
 
-                String imageUrl = parseJsonValue(json, "image_url"); // parse the image url
+                // Call Database (Void method, no boolean return)
+                Database.updateMatch(id, home, away, stadium, date, location, price, imageUrl);
 
-                // call the database
-                boolean succes = Database.updateMatch(id, home, away, date, location, price, imageUrl);
-
-                // pass image url to the database
-                boolean success = Database.updateMatch(id, home, away, date, location, price, imageUrl);
-                if (succes) {
-                    exchange.sendResponseHeaders(200, -1);
-                } else {
-                    exchange.sendResponseHeaders(404, -1);// not found
-                }
+                exchange.sendResponseHeaders(200, -1);
             } catch (Exception e) {
                 e.printStackTrace();
                 exchange.sendResponseHeaders(500, -1);
             }
             exchange.close();
+
+            // 6. POST: Add a new match
         } else if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
             try {
-                // read json body
-                java.io.InputStreamReader isr = new java.io.InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
-                java.io.BufferedReader br = new java.io.BufferedReader(isr);
-                StringBuilder body = new StringBuilder();
-                String line;
-                while ((line = br.readLine()) != null) body.append(line);
-                String json = body.toString();
+                String json = readBody(exchange);
 
-                // parse Data
-                // we DO NOT parse 'id' because the database generates it automatically
+                // Parse Data
                 String home = parseJsonValue(json, "teamHome");
                 String away = parseJsonValue(json, "teamAway");
                 String stadium = parseJsonValue(json, "stadium");
                 String date = parseJsonValue(json, "matchDate");
                 String location = parseJsonValue(json, "location");
-                String imageUrl = parseJsonValue(json, "image_url"); // The new photo field
+                String priceStr = parseJsonValue(json, "price");
+                String imageUrl = parseJsonValue(json, "image_url");
 
-                // handle price
                 double price = 0.0;
-                String price_str = parseJsonValue(json, "price");
-                if (!price_str.isEmpty()) {
-                    price = Double.parseDouble(price_str);
+                if (!priceStr.isEmpty()) {
+                    price = Double.parseDouble(priceStr);
                 }
 
-                // call database
+                // Call Database
                 Database.addMatch(home, away, stadium, date, location, price, imageUrl);
-                exchange.sendResponseHeaders(200, -1);// succes
 
+                exchange.sendResponseHeaders(200, -1);
             } catch(Exception e) {
                 System.out.println("❌ Error in POST:");
                 e.printStackTrace();
                 exchange.sendResponseHeaders(500, -1);
             }
+            exchange.close();
         }
     }
 
+    // --- HELPER METHODS ---
+
+    // Reads the Request Body (JSON string)
+    private String readBody(HttpExchange exchange) throws IOException {
+        java.io.InputStreamReader isr = new java.io.InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
+        java.io.BufferedReader br = new java.io.BufferedReader(isr);
+        StringBuilder body = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) body.append(line);
+        return body.toString();
+    }
+
+    // Manually parses a simple JSON string
     private String parseJsonValue(String json, String key) {
         String search = "\"" + key + "\":";
         int start = json.indexOf(search);
@@ -173,16 +151,16 @@ public class MatchHandler implements HttpHandler {
 
         start += search.length();
 
-        // Check if the value is a string (starts with quote) or number
+        // Check if value is string or number
         char firstChar = json.charAt(start);
         if (firstChar == '"') {
             start++; // skip opening quote
             int end = json.indexOf("\"", start);
             return json.substring(start, end);
         } else {
-            // It's a number (like price or id)
+            // It's a number
             int end = json.indexOf(",", start);
-            if (end == -1) end = json.indexOf("}", start); // case where it's the last item
+            if (end == -1) end = json.indexOf("}", start);
             return json.substring(start, end).trim();
         }
     }

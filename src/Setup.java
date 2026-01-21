@@ -7,7 +7,7 @@ public class Setup {
     // COPY THESE EXACTLY FROM YOUR Database.java
     private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USER = "postgres";
-    private static final String PASSWORD = "admin"; // <--- CHECK THIS!
+    private static final String PASSWORD = "admin";
 
     public static void main(String[] args) {
 
@@ -86,8 +86,7 @@ public class Setup {
             INSERT INTO stadiums (name, location) VALUES 
             ('Santiago Bernabeu', 'Madrid, Spain'),
             ('Anfield', 'Liverpool, UK');
-
-            INSERT INTO matches (home_team_id, away_team_id, stadium_id, match_date, price) VALUES 
+           INSERT INTO matches (home_team_id, away_team_id, stadium_id, match_date, price) VALUES 
             (1, 2, 1, '2025-05-20', 150.00),
             (3, 4, 2, '2025-06-15', 80.00);
         """;

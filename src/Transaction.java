@@ -19,9 +19,6 @@ public class Transaction {
         this.seat_number = seat;
     }
 
-    // allows frontend to read the data and save it
-    // when user click 'save'
-
 
     public void setId(int id) {
         this.id = id;

@@ -30,7 +30,7 @@ public class Register implements HttpHandler {
         if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
             // 2. Read the data sent from JavaScript
             InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
-            BufferedReader br = new BufferedReader(isr); // bufferu asta citeste lini intregi de cod machina
+            BufferedReader br = new BufferedReader(isr); // bufferu asta citeste linii intregi de cod machina
             StringBuilder body = new StringBuilder();
             String line;
             while ((line = br.readLine()) != null) {

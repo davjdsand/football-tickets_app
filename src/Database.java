@@ -4,16 +4,12 @@ import java.util.List;
 
 public class Database {
 
-    // ==========================================
-    // CONFIGURATION
-    // ==========================================
+    // database configuration
     private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USER = "postgres";
     private static final String PASSWORD = "admin"; // <--- CHECK THIS!
 
-    // ==========================================
-    // SECTION 1: USERS
-    // ==========================================
+    // users registration
     public static User signUp(String username, String password) {
         String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -43,11 +39,7 @@ public class Database {
         return null;
     }
 
-    // ==========================================
-    // SECTION 2: MATCHES (THE UPGRADED PART)
-    // ==========================================
-
-    // READ: We read from the VIEW (match_details) so it looks like a simple table
+    // we read from the VIEW (match_details) so it looks like a simple table
     public static List<Match> getMatches() {
         List<Match> matches = new ArrayList<>();
         String sql = "SELECT * FROM match_details ORDER BY id ASC"; // <--- READING FROM VIEW
@@ -75,7 +67,7 @@ public class Database {
 
     // WRITE: We must look up IDs first, then insert into matches
     public static void addMatch(String home, String away, String stadium, String date, String location, double price, String imageUrl) {
-        String sql = "INSERT INTO matches (home_team_id, away_team_id, stadium_id, match_date, price) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO matches (home_team_id, away_team_id, stadium_id, match_date, price, image_url) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
             // 1. Get IDs for the names (Create them if they don't exist)
@@ -90,33 +82,54 @@ public class Database {
                 pstmt.setInt(3, stadiumId);
                 pstmt.setString(4, date);
                 pstmt.setDouble(5, price);
+                pstmt.setString(6, imageUrl);
                 pstmt.executeUpdate();
-                System.out.println("✅ Match Added (Academic Structure)");
+                System.out.println("✅ Match Added ");
             }
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
-    // HELPER: Finds the ID of a Team/Stadium, or creates it if it doesn't exist
     private static int getOrInsertId(Connection conn, String table, String name, String extraInfo) throws SQLException {
-        // Search first
-        String query = "SELECT id FROM " + table + " WHERE name = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, name);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) return rs.getInt("id");
+        // 1. Search Logic
+        String query;
+        if (table.equals("stadiums")) {
+            // For stadiums, we must match Name AND Location
+            query = "SELECT id FROM stadiums WHERE name = ? AND location = ?";
+        } else {
+            // For teams, we only check Name
+            query = "SELECT id FROM teams WHERE name = ?";
         }
 
-        // If not found, Insert
-        String insert = "INSERT INTO " + table + " (name" + (table.equals("teams") ? ", logo_url" : ", location") + ") VALUES (?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, name);
+            if (table.equals("stadiums")) {
+                pstmt.setString(2, extraInfo); // Check location too
+            }
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) return rs.getInt("id"); // Found existing one!
+        }
+
+        // 2. Insert Logic (If not found)
+        String insert;
+        if (table.equals("teams")) {
+            insert = "INSERT INTO teams (name) VALUES (?)";
+        } else {
+            insert = "INSERT INTO stadiums (name, location) VALUES (?, ?)";
+        }
+
         try (PreparedStatement pstmt = conn.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, name);
-            pstmt.setString(2, extraInfo == null ? "" : extraInfo);
+            if (!table.equals("teams")) {
+                pstmt.setString(2, extraInfo == null ? "" : extraInfo);
+            }
             pstmt.executeUpdate();
+
             ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) return rs.getInt(1);
+            if (rs.next()) return rs.getInt(1); // Return the NEW ID
         }
         return -1;
     }
+
 
     public static void removeMatch(int id) {
         // DELETE CASCADE in SQL handles the transactions automatically
@@ -128,43 +141,40 @@ public class Database {
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
-    public static boolean updateMatch(int matchId, String home, String away, String date, String location, double price, String imageUrl) {
-        // 1. Update Match Details (Date, Price)
-        String sqlMatch = "UPDATE matches SET match_date=?, price=? WHERE id=?";
-
-        // 2. Update the Home Team's Logo (This updates the banner!)
-        // We use a subquery to find the correct team ID automatically
-        String sqlTeam = "UPDATE teams SET logo_url=? WHERE id = (SELECT home_team_id FROM matches WHERE id=?)";
+    public static void updateMatch(int matchId, String home, String away, String stadium, String date, String location, double price, String imageUrl) {
+        // update Match Details
+        String sqlMatch = "UPDATE matches SET home_team_id=?, away_team_id=?, stadium_id=?, match_date=?, price=?, image_url=? WHERE id=?";
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            // 1. Get (or create) IDs for the new names
+            // (Since teams/stadiums only have names now, we pass null for extra info)
+            int homeId = getOrInsertId(conn, "teams", home, null);
+            int awayId = getOrInsertId(conn, "teams", away, null);
+            int stadiumId = getOrInsertId(conn, "stadiums", stadium, location);
 
-            // Run first query (Match info)
+            // 2. Execute Update
             try (PreparedStatement pstmt = conn.prepareStatement(sqlMatch)) {
-                pstmt.setString(1, date);
-                pstmt.setDouble(2, price);
-                pstmt.setInt(3, matchId);
-                pstmt.executeUpdate();
+                pstmt.setInt(1, homeId);
+                pstmt.setInt(2, awayId);
+                pstmt.setInt(3, stadiumId);
+                pstmt.setString(4, date);
+                pstmt.setDouble(5, price);
+                pstmt.setString(6, imageUrl); // This saves the banner to the match!
+                pstmt.setInt(7, matchId);          // Identifies which match to update
+
+                int rows = pstmt.executeUpdate();
+                if (rows > 0) {
+                    System.out.println("✅ Match Updated Successfully!");
+                } else {
+                    System.out.println("❌ Error: Match ID not found.");
+                }
             }
-
-            // Run second query (Image info)
-            try (PreparedStatement pstmt = conn.prepareStatement(sqlTeam)) {
-                pstmt.setString(1, imageUrl);
-                pstmt.setInt(2, matchId);
-                pstmt.executeUpdate();
-            }
-
-            System.out.println("✅ Match & Banner Updated for ID: " + matchId);
-            return true;
-
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
     }
 
-    // ==========================================
-    // SECTION 3: TRANSACTIONS
-    // ==========================================
+    // Transactions
     public static void addTransaction(String zone, String username, int matchId, int seatNr, double price) {
         String sql = "INSERT INTO transactions (zone_name, username, match_id, seat_nr, price) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);

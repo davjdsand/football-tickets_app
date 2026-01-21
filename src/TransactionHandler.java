@@ -37,7 +37,7 @@ public class TransactionHandler implements HttpHandler {
                 String zone = parseJsonValue(json, "zone_name");
                 String username = parseJsonValue(json, "username");
 
-                // parseing integers
+                // parsing integers
                 int match_id = Integer.parseInt(parseJsonValue(json, "match_id"));
                 int seat = Integer.parseInt(parseJsonValue(json, "seat_nr"));
                 double price = Double.parseDouble(parseJsonValue(json, "price"));
