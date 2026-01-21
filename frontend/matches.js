@@ -245,7 +245,8 @@ function showOrderHistory() {
                     <div class="ticket-info">
                         📅 <b>Date:</b> ${ticket.date} <br>
                         📍 <b>Stadium:</b> ${ticket.stadium} <br>
-                        💺 <b>Seat:</b> ${ticket.seat} <span style="float:right; color:green; font-weight:bold;">$${ticket.price}</span>
+                        💺 <b>Seat:</b> ${ticket.zone} - ${ticket.seat} 
+                        <span style="float:right; color:green; font-weight:bold;">$${ticket.price}</span>
                     </div>
                 `;
                 list.appendChild(item);

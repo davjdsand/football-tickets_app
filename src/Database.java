@@ -206,9 +206,8 @@ public class Database {
     public static String getUserHistory(String username) {
         StringBuilder json = new StringBuilder("[");
 
-        // This query joins Transactions -> Matches -> Teams so we get readable names
-        // It also grabs the image_url so we can show logos if we want later
-        String sql = "SELECT t.seat_nr, t.price, m.match_date, " +
+        // ✅ Added "t.zone_name" to the SELECT list
+        String sql = "SELECT t.seat_nr, t.zone_name, t.price, m.match_date, " +
                 "t1.name AS home, t2.name AS away, s.name AS stadium " +
                 "FROM transactions t " +
                 "JOIN matches m ON t.match_id = m.id " +
@@ -232,6 +231,8 @@ public class Database {
                 json.append("\"match\": \"").append(rs.getString("home")).append(" vs ").append(rs.getString("away")).append("\",");
                 json.append("\"date\": \"").append(rs.getString("match_date")).append("\",");
                 json.append("\"stadium\": \"").append(rs.getString("stadium")).append("\",");
+                // ✅ Added Zone to the JSON response
+                json.append("\"zone\": \"").append(rs.getString("zone_name")).append("\",");
                 json.append("\"seat\": ").append(rs.getInt("seat_nr")).append(",");
                 json.append("\"price\": ").append(rs.getDouble("price"));
                 json.append("}");
@@ -243,6 +244,5 @@ public class Database {
         json.append("]");
         return json.toString();
     }
-
 }
 

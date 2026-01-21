@@ -41,12 +41,14 @@ function buyTicket (match_id) {
 
 // select zone
 function selectZone (zone_name) {
+    // 1. Find the match
     const match = allMatches.find(m => m.id === currentTransaction.match_id);
-    const base_price = match.price;
 
+    // 2. Save the zone and the price correctly
     currentTransaction.zone_name = zone_name;
-    //currentTransaction.price = base_price_modifier;
+    currentTransaction.price = match.price; // <--- FIX IS HERE
 
+    // 3. Switch UI to seat view
     document.getElementById('stadium-view').style.display = 'none';
     document.getElementById('seat-view').style.display = 'block';
     
@@ -54,12 +56,10 @@ function selectZone (zone_name) {
     document.getElementById('ticketModalTitle').innerText = "Select Your Seat";
 
     const btn = document.getElementById('confirm-seat-btn');
-    btn.innerText = "Select a Seat";  // Reset the text
-    btn.disabled = true;              // Disable it until they click a new seat
+    btn.innerText = "Select a Seat"; 
+    btn.disabled = true;              
 
-
-
-    generateSeats(); // Draw the grid
+    generateSeats(); 
 }
 
 
