@@ -40,17 +40,17 @@ function buyTicket (match_id) {
 }
 
 // select zone
-function selectZone (zone_name, base_price_modifier) {
+function selectZone (zone_name) {
     const match = allMatches.find(m => m.id === currentTransaction.match_id);
     const base_price = match.price;
 
     currentTransaction.zone_name = zone_name;
-    currentTransaction.price = base_price_modifier;
+    //currentTransaction.price = base_price_modifier;
 
     document.getElementById('stadium-view').style.display = 'none';
     document.getElementById('seat-view').style.display = 'block';
     
-    document.getElementById('selected-zone-display').innerText = `Zone: ${zone_name} - $${currentTransaction.price}`;
+    document.getElementById('selected-zone-display').innerText = `Zone: ${zone_name}`;
     document.getElementById('ticketModalTitle').innerText = "Select Your Seat";
 
     const btn = document.getElementById('confirm-seat-btn');
