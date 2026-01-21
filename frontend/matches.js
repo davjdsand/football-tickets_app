@@ -250,9 +250,3 @@ function closeAddModal () {
         overlay.style.display = 'none';
     }
 }
-
-
-
-
-
-
