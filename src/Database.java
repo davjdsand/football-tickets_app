@@ -200,4 +200,49 @@ public class Database {
         } catch (SQLException e) { e.printStackTrace(); }
         return takenSeats;
     }
+
+    // Add this inside Database.java
+
+    public static String getUserHistory(String username) {
+        StringBuilder json = new StringBuilder("[");
+
+        // This query joins Transactions -> Matches -> Teams so we get readable names
+        // It also grabs the image_url so we can show logos if we want later
+        String sql = "SELECT t.seat_nr, t.price, m.match_date, " +
+                "t1.name AS home, t2.name AS away, s.name AS stadium " +
+                "FROM transactions t " +
+                "JOIN matches m ON t.match_id = m.id " +
+                "JOIN teams t1 ON m.home_team_id = t1.id " +
+                "JOIN teams t2 ON m.away_team_id = t2.id " +
+                "JOIN stadiums s ON m.stadium_id = s.id " +
+                "WHERE t.username = ?";
+
+        try (java.sql.Connection conn = java.sql.DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "admin");
+             java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            java.sql.ResultSet rs = pstmt.executeQuery();
+
+            boolean first = true;
+            while (rs.next()) {
+                if (!first) json.append(",");
+                first = false;
+
+                json.append("{");
+                json.append("\"match\": \"").append(rs.getString("home")).append(" vs ").append(rs.getString("away")).append("\",");
+                json.append("\"date\": \"").append(rs.getString("match_date")).append("\",");
+                json.append("\"stadium\": \"").append(rs.getString("stadium")).append("\",");
+                json.append("\"seat\": ").append(rs.getInt("seat_nr")).append(",");
+                json.append("\"price\": ").append(rs.getDouble("price"));
+                json.append("}");
+            }
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+
+        json.append("]");
+        return json.toString();
+    }
+
 }
+

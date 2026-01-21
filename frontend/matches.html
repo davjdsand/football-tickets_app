@@ -1,148 +1,146 @@
 <!doctype html>
-
-<html lang = "en">
+<html lang="en">
 
 <head>
-
-    <meta charset="UTF-8" > 
+    <meta charset="UTF-8">
     <title>Available Matches</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-
     <header class="navbar">
         <div class="logo">⚽ Football Tickets</div>
-        
+
         <div class="burger-icon" onclick="toggleMenu()">☰</div>
 
         <div id="dropdown-menu" class="dropdown-content">
             <div class="menu-header">
                 <span id="welcome_user">Guest</span>
             </div>
-            <hr> <a href="#" onclick="alert('Profile coming soon!')">My Profile</a>
-            <a href="#" onclick="alert('History coming soon!')">Order History</a>
+            <hr> 
+            <a href="#" onclick="alert('Profile coming soon!')">My Profile</a>
+            <a href="javascript:void(0)" onclick="showOrderHistory()">Order History</a>
             <a href="#" onclick="doLogout()" class="logout-link">Logout</a>
         </div>
     </header>
 
 
     <div class="container">
-
         <h1 style="text-align: center; color: white; text-shadow: 2px, 2px 4px #000;">Upcoming Matches</h1>
-
         <div id="matches_container" class="matches_grid"></div>
     </div>
 
 
     <div id="editModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;"></div>
-    
+
     <div id="editModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; z-index:1000; width:300px; border-radius:8px;">
         <h2 style="color:black; text-align:center;">Edit Match</h2>
-        
+
         <input type="hidden" id="edit-id">
-        
+
         <label>Home Team:</label>
         <input type="text" id="edit-home" style="width:100%; margin-bottom:10px;">
-        
+
         <label>Away Team:</label>
         <input type="text" id="edit-away" style="width:100%; margin-bottom:10px;">
-        
+
         <label>Date:</label>
         <input type="date" id="edit-date" style="width:100%; margin-bottom:10px;">
-        
+
         <label>Location:</label>
         <input type="text" id="edit-location" style="width:100%; margin-bottom:10px;">
-        
+
         <label>Price:</label>
         <input type="number" id="edit-price" style="width:100%; margin-bottom:10px;">
-        
+
         <label>Banner URL: </label>
         <input type="text" id="edit-image" style="width:100%; margin-bottom:20px;">
         <div style="display:flex; justify-content:space-between;">
             <button onclick="closeEditModal()" style="background:red; color:white;">Discard</button>
             <button onclick="saveMatchChanges()" style="background:green; color:white;">Save</button>
         </div>
-
-        
     </div>
 
-    <div id = "addModalOverlay" style = "display: none; position: fixed; top: 0; left: 0; width: 100; height: 100; background: rgba(0,0,0,0.5);z-index:999;"></div>
+    <div id="addModalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);z-index:999;"></div>
 
     <div id="addModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; z-index:1000; width:300px; border-radius:8px; max-height:90vh; overflow-y:auto;">
-    <h2 style="color:black; text-align:center;">Add New Match</h2>
-    
-    <label>Home Team:</label>
-    <input type="text" id="add-home" placeholder="e.g. Liverpool" style="width:100%; margin-bottom:5px;">
-    
-    <label>Away Team:</label>
-    <input type="text" id="add-away" placeholder="e.g. Chelsea" style="width:100%; margin-bottom:5px;">
-    
-    <label>Stadium:</label>
-    <input type="text" id="add-stadium" placeholder="e.g. Anfield" style="width:100%; margin-bottom:5px;">
+        <h2 style="color:black; text-align:center;">Add New Match</h2>
 
-    <label>Date:</label>
-    <input type="date" id="add-date" style="width:100%; margin-bottom:5px;">
-    
-    <label>Location:</label>
-    <input type="text" id="add-location" placeholder="e.g. London, UK" style="width:100%; margin-bottom:5px;">
-    
-    <label>Price ($):</label>
-    <input type="number" id="add-price" placeholder="50.00" style="width:100%; margin-bottom:5px;">
-    
-    <label>Photo URL (Poster):</label>
-    <input type="text" id="add-image" placeholder="https://example.com/photo.jpg" style="width:100%; margin-bottom:15px;">
-    
-    <div style="display:flex; justify-content:space-between;">
-        <button onclick="closeAddModal()" style="background:red; color:white; padding:5px 10px;">Cancel</button>
-        <button onclick="saveNewMatch()" style="background:blue; color:white; padding:5px 10px;">Create Match</button>
-    </div>
+        <label>Home Team:</label>
+        <input type="text" id="add-home" placeholder="e.g. Liverpool" style="width:100%; margin-bottom:5px;">
 
-</div>
+        <label>Away Team:</label>
+        <input type="text" id="add-away" placeholder="e.g. Chelsea" style="width:100%; margin-bottom:5px;">
 
-    
-    <div id="ticketModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:10%; background:rgba(0,0,0,0.8); z-index:2000;"></div>
+        <label>Stadium:</label>
+        <input type="text" id="add-stadium" placeholder="e.g. Anfield" style="width:100%; margin-bottom:5px;">
 
-    <div id="ticketModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:0; z-index:2001;
-     width:800px; height:660px; border-radius:12px; overflow:hidden;flex-direction:column;">
-        <div style="position: relative; background: #002F6C; color: white; display: flex; justify-content: center; align-items: center; padding: 0 10px;">
-        <h2 id="ticketModalTitle" style="margin: 0px; font-size: 1.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80%;">Select your zone</h2>
-        <button onclick="closeTicketModal()" style="position: absolute;background: transparent; right: 15px; top: 50%; transform: translateY(-50); 
-        border: none; color: white; font-size: 1.5rem; cursor: pointer; line-height: 0; width: auto; margin: 0; padding: 0;">✕</button>
-    </div>
+        <label>Date:</label>
+        <input type="date" id="add-date" style="width:100%; margin-bottom:5px;">
 
-    <div id="stadium-view" style="flex: 1; padding: 10px; display: flex; justify-content: center; position: relative; overflow-y: auto;">
-        <div class="stadium-container">
-            <div class="stand north" onclick="selectZone('North Stand')">North Stand</div>
-            <div class="stand south" onclick="selectZone('South Stand')">South Stand</div>
-            <div class="stand east" onclick="selectZone('East Stand')">East Stand</div>
-            <div class="stand west" onclick="selectZone('West Stand')">West Stand</div>
-            <div class="pitch">Pitch</div>
+        <label>Location:</label>
+        <input type="text" id="add-location" placeholder="e.g. London, UK" style="width:100%; margin-bottom:5px;">
+
+        <label>Price ($):</label>
+        <input type="number" id="add-price" placeholder="50.00" style="width:100%; margin-bottom:5px;">
+
+        <label>Photo URL (Poster):</label>
+        <input type="text" id="add-image" placeholder="https://example.com/photo.jpg" style="width:100%; margin-bottom:15px;">
+
+        <div style="display:flex; justify-content:space-between;">
+            <button onclick="closeAddModal()" style="background:red; color:white; padding:5px 10px;">Cancel</button>
+            <button onclick="saveNewMatch()" style="background:blue; color:white; padding:5px 10px;">Create Match</button>
         </div>
     </div>
 
+
+    <div id="ticketModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000;"></div>
+
+    <div id="ticketModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:0; z-index:2001; width:800px; height:660px; border-radius:12px; overflow:hidden; flex-direction:column;">
+        
+        <div style="position: relative; background: #002F6C; color: white; display: flex; justify-content: center; align-items: center; padding: 0 10px;">
+            <h2 id="ticketModalTitle" style="margin: 0px; font-size: 1.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80%;">Select your zone</h2>
+            <button onclick="closeTicketModal()" style="position: absolute;background: transparent; right: 15px; top: 50%; transform: translateY(-50%); border: none; color: white; font-size: 1.5rem; cursor: pointer; line-height: 0; width: auto; margin: 0; padding: 0;">✕</button>
+        </div>
+
+        <div id="stadium-view" style="flex: 1; padding: 10px; display: flex; justify-content: center; position: relative; overflow-y: auto;">
+            <div class="stadium-container">
+                <div class="stand north" onclick="selectZone('North Stand')">North Stand</div>
+                <div class="stand south" onclick="selectZone('South Stand')">South Stand</div>
+                <div class="stand east" onclick="selectZone('East Stand')">East Stand</div>
+                <div class="stand west" onclick="selectZone('West Stand')">West Stand</div>
+                <div class="pitch">Pitch</div>
+            </div>
+        </div>
+
         <div id="seat-view" style="display:none; flex:1; padding:20px; overflow-y:auto;">
             <p id="selected-zone-display" style="text-align:center; font-weight:bold; color:#555;"></p>
-            
+
             <div id="seats-grid" class="seats-grid"></div>
-            
+
             <div style="margin-top:20px; text-align:center;">
                 <button onclick="backToStadium()" style="background:#ccc; padding:10px 20px;">Back</button>
                 <button id="confirm-seat-btn" onclick="confirmPurchase()" style="background:#002F6C; color:white; padding:10px 20px;" disabled>Select a Seat</button>
             </div>
         </div>
-
-
     </div>
 
+    <div id="historyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000;">
+        <div style="background: white; padding: 20px; border-radius: 10px; width: 500px; max-height: 80vh; overflow-y: auto; text-align: left;">
+            <h2 style="color: #002F6C; text-align: center; border-bottom: 2px solid #002F6C; padding-bottom: 10px;">🎟️ My Ticket Wallet</h2>
+            
+            <div id="historyList" style="margin-top: 15px;">
+                </div>
+    
+            <button onclick="document.getElementById('historyModal').style.display='none'" style="margin-top: 20px; padding: 10px 20px; background: #d9534f; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%;">Close Wallet</button>
+        </div>
+    </div>
 
 
     <script src="matches.js"></script>
     <script src="seats.js"></script>
 
-
 </body>
 
-
-</hmtl>
+</html>

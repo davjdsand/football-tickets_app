@@ -434,5 +434,53 @@ button {
     opacity: 0.6;
 }
 
+/* --- WALLET / ORDER HISTORY STYLES --- */
+
+/* The specific ticket container */
+.ticket-item {
+    background: #fff;
+    border: 2px dashed #002F6C; /* Dashed blue line like a real ticket */
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Soft shadow */
+    transition: transform 0.2s ease;
+    color: black; /* Ensure text is readable against white */
+}
+
+/* Pop effect when hovering */
+.ticket-item:hover {
+    transform: scale(1.02);
+    border-color: #d4af37; /* Changes to gold on hover */
+}
+
+/* The match title (e.g., Real Madrid vs Barcelona) */
+.ticket-header {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #002F6C;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+/* The details (Date, Stadium, Seat) */
+.ticket-info {
+    font-size: 0.95em;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* Clean up the Close button on the modal */
+#historyModal button {
+    background-color: #d9534f;
+    width: 100%;
+    margin-top: 15px;
+}
+#historyModal button:hover {
+    background-color: #c9302c;
+}
+
 
 

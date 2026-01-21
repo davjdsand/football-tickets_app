@@ -18,6 +18,7 @@ public class Main {
         server.createContext("/api/login", new Login());
         // tell server: when js asks for TransactionHandler use Transaction()
         server.createContext("/api/transactions", new TransactionHandler());
+        server.createContext("/api/history", new HistoryHandler());
 
 
         server.setExecutor(null);
