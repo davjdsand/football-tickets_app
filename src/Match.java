@@ -31,12 +31,13 @@ public class Match {
                         "\"id\": %d, " +
                         "\"teamHome\": \"%s\", " +
                         "\"teamAway\": \"%s\", " +
+                        "\"stadium\": \"%s\", " +
                         "\"matchDate\": \"%s\", " +
                         "\"price\": %.2f, " +
                         "\"location\": \"%s\", " +
                         "\"image_url\": \"%s\"" +
                         "}",
-                match_id, home_team_name, away_team_name, match_date, ticket_price, location, image_url
+                match_id, home_team_name, away_team_name, stadium_name, match_date, ticket_price, location, image_url
         );
     }
     public int getMatchID () {

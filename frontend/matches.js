@@ -113,6 +113,7 @@ function editMatch(id) {
     document.getElementById("edit-id").value = match.id;
     document.getElementById("edit-home").value = match.teamHome;
     document.getElementById("edit-away").value = match.teamAway;
+    document.getElementById("edit-stadium").value = match.stadium; 
     document.getElementById("edit-date").value = match.matchDate;
     document.getElementById("edit-location").value = match.location;
     document.getElementById("edit-price").value = match.price;
@@ -127,6 +128,7 @@ function saveMatchChanges() {
         id: document.getElementById('edit-id').value,
         teamHome: document.getElementById('edit-home').value,
         teamAway: document.getElementById('edit-away').value,
+        stadium: document.getElementById('edit-stadium').value, 
         matchDate: document.getElementById('edit-date').value,
         location: document.getElementById('edit-location').value,
         price: document.getElementById('edit-price').value,
