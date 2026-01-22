@@ -10,7 +10,7 @@ public class Database {
     // database configuration
     private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USER = "postgres";
-    private static final String PASSWORD = "admin"; // <--- CHECK THIS!
+    private static final String PASSWORD = "admin";
 
     // users registration
     public static User signUp(String username, String password) {
@@ -54,7 +54,7 @@ public class Database {
             while (rs.next()) {
                 Match m = new Match(
                         rs.getInt("id"),
-                        rs.getString("team_home"), // The View gives us Strings!
+                        rs.getString("team_home"),
                         rs.getString("team_away"),
                         rs.getString("stadium"),
                         rs.getString("match_date"),

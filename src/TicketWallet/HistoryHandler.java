@@ -25,7 +25,7 @@ public class HistoryHandler implements HttpHandler {
                 String query = exchange.getRequestURI().getQuery();
                 String username = "";
 
-                // 2. Parse parameters correctly (fixes the "split" bug)
+                // 2. Parse parameters
                 if (query != null) {
                     String[] pairs = query.split("&");
                     for (String pair : pairs) {

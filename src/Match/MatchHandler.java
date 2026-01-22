@@ -13,11 +13,12 @@ public class MatchHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         // 1. CORS Headers (Allows your browser JS to talk to Java)
+        // cors : cross-origin resource sharing
         exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS");
         exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
 
-        // 2. Handle OPTIONS (Pre-flight check)
+        // 2. Handle OPTIONS
         if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
             exchange.sendResponseHeaders(204, -1);
             return;
@@ -85,14 +86,14 @@ public class MatchHandler implements HttpHandler {
                 int id = Integer.parseInt(parseJsonValue(json, "id"));
                 String home = parseJsonValue(json, "teamHome");
                 String away = parseJsonValue(json, "teamAway");
-                String stadium = parseJsonValue(json, "stadium"); // ✅ Correctly reading stadium
+                String stadium = parseJsonValue(json, "stadium");
                 String date = parseJsonValue(json, "matchDate");
                 String location = parseJsonValue(json, "location");
                 String priceStr = parseJsonValue(json, "price");
                 double price = Double.parseDouble(priceStr);
                 String imageUrl = parseJsonValue(json, "image_url");
 
-                // Call Database.Database (Void method, no boolean return)
+                // Call Database.Database
                 Database.updateMatch(id, home, away, stadium, date, location, price, imageUrl);
 
                 exchange.sendResponseHeaders(200, -1);
@@ -133,8 +134,6 @@ public class MatchHandler implements HttpHandler {
             exchange.close();
         }
     }
-
-    // --- HELPER METHODS ---
 
     // Reads the Request Body (JSON string)
     private String readBody(HttpExchange exchange) throws IOException {

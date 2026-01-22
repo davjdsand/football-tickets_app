@@ -8,7 +8,7 @@ public class Setup {
 
     private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USER = "postgres";
-    private static final String PASSWORD = "admin"; // <--- Make sure this matches!
+    private static final String PASSWORD = "admin";
 
     public static void main(String[] args) {
 
