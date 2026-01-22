@@ -1,3 +1,6 @@
+package Match;
+
+import Database.Database;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
@@ -45,7 +48,7 @@ public class MatchHandler implements HttpHandler {
                 os.close();
 
             } catch (Exception e) {
-                System.out.println("❌ CRASH inside MatchHandler (GET):");
+                System.out.println("❌ CRASH inside Match.MatchHandler (GET):");
                 e.printStackTrace();
                 exchange.sendResponseHeaders(500, 0);
                 exchange.close();
@@ -89,7 +92,7 @@ public class MatchHandler implements HttpHandler {
                 double price = Double.parseDouble(priceStr);
                 String imageUrl = parseJsonValue(json, "image_url");
 
-                // Call Database (Void method, no boolean return)
+                // Call Database.Database (Void method, no boolean return)
                 Database.updateMatch(id, home, away, stadium, date, location, price, imageUrl);
 
                 exchange.sendResponseHeaders(200, -1);
@@ -118,7 +121,7 @@ public class MatchHandler implements HttpHandler {
                     price = Double.parseDouble(priceStr);
                 }
 
-                // Call Database
+                // Call Database.Database
                 Database.addMatch(home, away, stadium, date, location, price, imageUrl);
 
                 exchange.sendResponseHeaders(200, -1);

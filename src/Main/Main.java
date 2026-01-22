@@ -1,4 +1,9 @@
+package Main;
 
+import TicketWallet.HistoryHandler;
+import Transactions.TransactionHandler;
+import User.*;
+import Match.*;
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -14,9 +19,9 @@ public class Main {
 
         //tell server when js asks for registerHandler, use Regsiter()
         server.createContext("/api/register", new Register());
-        // tell server: when js asks for /login, use Login()
+        // tell server: when js asks for /login, use User.Login()
         server.createContext("/api/login", new Login());
-        // tell server: when js asks for TransactionHandler use Transaction()
+        // tell server: when js asks for Transactions.TransactionHandler use Transactions.Transaction()
         server.createContext("/api/transactions", new TransactionHandler());
         server.createContext("/api/history", new HistoryHandler());
 

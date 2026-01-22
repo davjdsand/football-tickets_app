@@ -1,9 +1,12 @@
+package Tests;
+import Match.*;
+
 public class TestMatch {
 
     public static void main(String[] args) {
-        System.out.println("🧪 STARTING UNIT TEST: Match Class...");
+        System.out.println("🧪 STARTING UNIT TEST: Match.Match Class...");
 
-        // 1. Setup Test Data
+        // 1. Database.Setup Test Data
         int id = 100;
         String home = "Test FC";
         String away = "Debug United";

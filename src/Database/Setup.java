@@ -1,3 +1,5 @@
+package Database;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -176,7 +178,7 @@ public class Setup {
             System.out.println("✅ DATABASE RESTORED! (25 Personalities, 25 Stadiums, 25 Matches)");
 
         } catch (Exception e) {
-            System.out.println("❌ Setup Failed. Check password/server.");
+            System.out.println("❌ Database.Setup Failed. Check password/server.");
             e.printStackTrace();
         }
     }

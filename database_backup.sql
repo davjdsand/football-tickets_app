@@ -71,7 +71,7 @@ FROM matches m
 
 -- 4. INSERT DEFAULT DATA
 
--- Admin User
+-- User.Admin User.User
 INSERT INTO users (username, password, role) VALUES ('Andrei_Adminu', 'Observator1', 'ADMIN');
 
 -- Sample Teams

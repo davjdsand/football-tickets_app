@@ -1,3 +1,6 @@
+package TicketWallet;
+
+import Database.Database;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
@@ -39,7 +42,7 @@ public class HistoryHandler implements HttpHandler {
                     return;
                 }
 
-                // 3. Get History from Database
+                // 3. Get History from Database.Database
                 String response = Database.getUserHistory(username);
 
                 // 4. Send Response (Fixes the character length bug)

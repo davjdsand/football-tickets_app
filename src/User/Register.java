@@ -1,4 +1,6 @@
+package User;
 
+import Database.Database;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.BufferedReader;
@@ -7,7 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-public class Login implements HttpHandler {
+public class Register implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -42,7 +44,7 @@ public class Login implements HttpHandler {
             String password = parseJsonValue(request_data, "password");
 
 
-            User user = Database.checkLogin(username, password);
+            User user = Database.signUp(username, password);
 
             String response;
             int status_code;
@@ -51,8 +53,8 @@ public class Login implements HttpHandler {
                 status_code = 200;
                 response = user.toString();
             } else {
-                status_code = 401;
-                response = "{\"error\": \"Wrong usernamme or password\"}";
+                status_code = 409;
+                response = "{\"error\": \"Username already exists\"}";
             }
 
 

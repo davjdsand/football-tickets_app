@@ -1,3 +1,6 @@
+package Database;
+import User.*;
+import Match.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +87,7 @@ public class Database {
                 pstmt.setDouble(5, price);
                 pstmt.setString(6, imageUrl);
                 pstmt.executeUpdate();
-                System.out.println("✅ Match Added ");
+                System.out.println("✅ Match.Match Added ");
             }
         } catch (SQLException e) { e.printStackTrace(); }
     }
@@ -142,7 +145,7 @@ public class Database {
     }
 
     public static void updateMatch(int matchId, String home, String away, String stadium, String date, String location, double price, String imageUrl) {
-        // update Match Details
+        // update Match.Match Details
         String sqlMatch = "UPDATE matches SET home_team_id=?, away_team_id=?, stadium_id=?, match_date=?, price=?, image_url=? WHERE id=?";
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
@@ -164,9 +167,9 @@ public class Database {
 
                 int rows = pstmt.executeUpdate();
                 if (rows > 0) {
-                    System.out.println("✅ Match Updated Successfully!");
+                    System.out.println("✅ Match.Match Updated Successfully!");
                 } else {
-                    System.out.println("❌ Error: Match ID not found.");
+                    System.out.println("❌ Error: Match.Match ID not found.");
                 }
             }
         } catch (SQLException e) {
@@ -201,7 +204,7 @@ public class Database {
         return takenSeats;
     }
 
-    // Add this inside Database.java
+    // Add this inside Database.Database.java
 
     public static String getUserHistory(String username) {
         StringBuilder json = new StringBuilder("[");
